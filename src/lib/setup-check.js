@@ -37,7 +37,8 @@ function missingConfig() {
 function warnings() {
   if (!IS_PRODUCTION) return [];
   const list = [];
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+  const hasBlob = Object.keys(process.env).some((k) => k.endsWith('_READ_WRITE_TOKEN') && String(process.env[k]).startsWith('vercel_blob_'));
+  if (!hasBlob) {
     list.push('ยังไม่ได้ต่อ Vercel Blob — รูปภาพที่อัปโหลดจะหายทุกครั้งที่ deploy ใหม่');
   }
   if (!process.env.SECURE_COOKIE) {

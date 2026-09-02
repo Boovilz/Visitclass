@@ -14,8 +14,28 @@ const crypto = require('node:crypto');
 const multer = require('multer');
 const { bad } = require('./validate');
 
-const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN || '';
+/**
+ * หา token ของ Vercel Blob
+ * ปกติชื่อ BLOB_READ_WRITE_TOKEN แต่ถ้าตั้ง prefix ตอนผูก store
+ * ชื่อจะเปลี่ยนตามไปด้วย เช่น VISITCLASSDB_READ_WRITE_TOKEN
+ * จึงมองหาตัวแปรใดก็ได้ที่ลงท้ายด้วย _READ_WRITE_TOKEN
+ */
+function findBlobToken() {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    return { key: 'BLOB_READ_WRITE_TOKEN', value: process.env.BLOB_READ_WRITE_TOKEN };
+  }
+  const key = Object.keys(process.env).find(
+    (k) => k.endsWith('_READ_WRITE_TOKEN') && String(process.env[k]).startsWith('vercel_blob_')
+  );
+  return key ? { key, value: process.env[key] } : { key: null, value: '' };
+}
+
+const BLOB = findBlobToken();
+const BLOB_TOKEN = BLOB.value;
 const USE_BLOB = !!BLOB_TOKEN;
+if (USE_BLOB && BLOB.key !== 'BLOB_READ_WRITE_TOKEN') {
+  console.log(`[uploads] ใช้ Vercel Blob จากตัวแปร ${BLOB.key}`);
+}
 
 const UPLOAD_DIR = process.env.UPLOADS_DIR || path.join(__dirname, '..', '..', 'uploads');
 
