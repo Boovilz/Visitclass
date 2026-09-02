@@ -13,7 +13,8 @@ function missingConfig() {
   if (!IS_PRODUCTION) return [];
   const missing = [];
 
-  if (!process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
+  const dbKeys = ['DATABASE_URL', 'POSTGRES_URL', 'POSTGRES_PRISMA_URL', 'DATABASE_URL_UNPOOLED', 'POSTGRES_URL_NON_POOLING'];
+  if (!dbKeys.some((k) => process.env[k])) {
     missing.push({
       key: 'DATABASE_URL',
       title: 'ยังไม่ได้ต่อฐานข้อมูล Neon',

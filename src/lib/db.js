@@ -14,7 +14,17 @@
 const path = require('node:path');
 const fs = require('node:fs');
 
-const CONNECTION_STRING = process.env.DATABASE_URL || process.env.POSTGRES_URL || '';
+// Neon ที่สร้างผ่าน Vercel อาจตั้งชื่อตัวแปรได้หลายแบบ จึงมองหาทุกชื่อที่เป็นไปได้
+// (เรียงจากที่เหมาะกับ serverless ที่สุด คือแบบ pooled ก่อน)
+const CONNECTION_KEYS = [
+  'DATABASE_URL',
+  'POSTGRES_URL',
+  'POSTGRES_PRISMA_URL',
+  'DATABASE_URL_UNPOOLED',
+  'POSTGRES_URL_NON_POOLING',
+];
+const CONNECTION_KEY = CONNECTION_KEYS.find((k) => process.env[k]);
+const CONNECTION_STRING = CONNECTION_KEY ? process.env[CONNECTION_KEY] : '';
 const USE_NEON = !!CONNECTION_STRING;
 
 const now = () => new Date().toISOString();

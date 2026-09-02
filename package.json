@@ -16,7 +16,7 @@
     "test": "node scripts/check-sql.js && node scripts/run-tests.js",
     "test:live": "node scripts/smoke-test.js",
     "preflight": "node scripts/preflight.js",
-    "build": "npm run vendor && npm run build:css",
+    "build": "npm run vendor && npm run build:css && node scripts/build-static.js",
     "check:sql": "node scripts/check-sql.js",
     "migrate:from-sqlite": "node scripts/migrate-sqlite-to-postgres.js"
   },

@@ -4,7 +4,9 @@
   "framework": null,
 
   "buildCommand": "npm run build",
-  "outputDirectory": "public",
+
+  "//": "dist/ มีเฉพาะ css/js/vendor — ไฟล์ .html ไม่อยู่ในนี้ เพราะหน้าเว็บต้องผ่านตัวแอปเพื่อใส่เลขเวอร์ชันไฟล์และตรวจสอบสิทธิ์",
+  "outputDirectory": "dist",
 
   "functions": {
     "api/index.js": {

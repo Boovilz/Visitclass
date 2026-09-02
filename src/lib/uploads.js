@@ -18,7 +18,15 @@ const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN || '';
 const USE_BLOB = !!BLOB_TOKEN;
 
 const UPLOAD_DIR = process.env.UPLOADS_DIR || path.join(__dirname, '..', '..', 'uploads');
-if (!USE_BLOB) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+
+// ห้ามแตะระบบไฟล์ตอนโหลดโมดูล — บน serverless ระบบไฟล์เขียนไม่ได้
+// ถ้าทำจะพังทั้งฟังก์ชันตั้งแต่ยังไม่ทันรับ request แรก
+let uploadDirReady = false;
+function ensureUploadDir() {
+  if (uploadDirReady || USE_BLOB) return;
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+  uploadDirReady = true;
+}
 
 const ALLOWED = new Map([
   ['image/jpeg', '.jpg'],
@@ -73,6 +81,7 @@ async function storeFile(file) {
     return { url: blob.url, fileName: file.originalname || fileName };
   }
 
+  ensureUploadDir();
   await fs.promises.writeFile(path.join(UPLOAD_DIR, fileName), file.buffer);
   return { url: `/uploads/${fileName}`, fileName: file.originalname || fileName };
 }
