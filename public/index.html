@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#F13596" />
+  <meta name="description" content="ระบบแบบเยี่ยมชั้นเรียน สำหรับบันทึกและสรุปผลการเยี่ยมชั้นเรียนภายในสถานศึกษา" />
+  <title>แบบการเยี่ยมชั้นเรียน</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%AB%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css?v=__ASSET_V__" />
+</head>
+<body class="flex min-h-screen flex-col">
+
+  <!-- ============ Header ============ -->
+  <header class="w-full bg-gradient-to-l from-brand-500 via-brand-600 to-plum text-white shadow-lg">
+    <div class="container-app flex items-center gap-3 py-4 sm:gap-4 sm:py-5">
+      <div data-school-logo class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/95 text-brand-500 shadow-md sm:h-16 sm:w-16"></div>
+      <div class="min-w-0 flex-1">
+        <h1 class="truncate text-base font-extrabold leading-tight sm:text-2xl">แบบการเยี่ยมชั้นเรียน</h1>
+        <p data-school-name class="truncate text-xs font-semibold text-white/95 sm:text-base"></p>
+        <p data-affiliation-name class="truncate text-[11px] text-white/80 sm:text-sm"></p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container-app flex-1 py-5 pb-28 sm:py-8 sm:pb-24">
+
+    <!-- ============ Stepper ============ -->
+    <nav aria-label="ขั้นตอนการบันทึกแบบการเยี่ยมชั้นเรียน" class="mb-5 sm:mb-7">
+      <ol class="flex items-center gap-2 sm:gap-4">
+        <li class="flex flex-1 items-center gap-2 sm:gap-3" data-step-item="1">
+          <span data-step-badge class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-extrabold transition sm:h-11 sm:w-11">1</span>
+          <span class="min-w-0">
+            <span class="block text-[11px] font-semibold uppercase tracking-wide text-slate-400">ตอนที่ 1</span>
+            <span data-step-label class="block truncate text-xs font-bold sm:text-sm">ข้อมูลทั่วไป</span>
+          </span>
+          <span class="mx-1 hidden h-0.5 flex-1 rounded bg-slate-200 sm:block" data-step-line></span>
+        </li>
+        <li class="flex flex-1 items-center gap-2 sm:gap-3" data-step-item="2">
+          <span data-step-badge class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-extrabold transition sm:h-11 sm:w-11">2</span>
+          <span class="min-w-0">
+            <span class="block text-[11px] font-semibold uppercase tracking-wide text-slate-400">ตอนที่ 2</span>
+            <span data-step-label class="block truncate text-xs font-bold sm:text-sm">แบบการเยี่ยมชั้นเรียน</span>
+          </span>
+        </li>
+      </ol>
+    </nav>
+
+    <!-- ============ ตอนที่ 1 : ข้อมูลทั่วไป ============ -->
+    <section id="step-1" class="card card-pad animate-fade-in">
+      <h2 class="section-title mb-5">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-500" data-icon="info"></span>
+        ตอนที่ 1 : ข้อมูลทั่วไป
+      </h2>
+
+      <div id="step1-skeleton" class="grid gap-4 sm:grid-cols-2">
+        <div class="skeleton h-16"></div><div class="skeleton h-16"></div>
+        <div class="skeleton h-16"></div><div class="skeleton h-16"></div>
+        <div class="skeleton h-16"></div><div class="skeleton h-16"></div>
+      </div>
+
+      <form id="general-form" class="hidden grid gap-4 sm:grid-cols-2" novalidate>
+        <div data-field>
+          <label class="label req" for="semesterId">ภาคเรียน</label>
+          <select id="semesterId" class="input" required></select>
+          <p class="help-error" data-error></p>
+        </div>
+
+        <div data-field>
+          <label class="label req" for="academicYearId">ปีการศึกษา</label>
+          <select id="academicYearId" class="input" required></select>
+          <p class="help-error" data-error></p>
+        </div>
+
+        <div data-field class="sm:col-span-2">
+          <label class="label req" id="label-teacher">ชื่อผู้รับผิดชอบชั้นเรียน (ผู้รับการเยี่ยมชั้นเรียน)</label>
+          <div id="teacher-select" aria-labelledby="label-teacher"></div>
+          <p class="help-error" data-error></p>
+        </div>
+
+        <div data-field>
+          <label class="label req" id="label-classroom">ชั้นเรียน</label>
+          <div id="classroom-select" aria-labelledby="label-classroom"></div>
+          <p class="help-error" data-error></p>
+        </div>
+
+        <div data-field>
+          <label class="label req" for="visitDate">วันที่เยี่ยมชั้นเรียน</label>
+          <input type="date" id="visitDate" class="input" required />
+          <p class="help-error" data-error></p>
+        </div>
+
+        <div data-field class="sm:col-span-2">
+          <label class="label req" id="label-visitor">ชื่อผู้เยี่ยมชั้นเรียน</label>
+          <div id="visitor-select" aria-labelledby="label-visitor"></div>
+          <p class="help-error" data-error></p>
+        </div>
+
+        <!-- ระดับการศึกษา -->
+        <div data-field class="sm:col-span-2">
+          <span class="label req">ระดับการศึกษา</span>
+          <div id="education-level" class="flex flex-wrap gap-2" role="radiogroup" aria-label="ระดับการศึกษา"></div>
+          <p class="help-error" data-error></p>
+        </div>
+
+        <!-- ข้อมูลวิชา (แสดงเฉพาะระดับขั้นพื้นฐาน) -->
+        <div id="subject-block" class="hidden sm:col-span-2 grid gap-4 rounded-2xl border border-brand-100 bg-brand-50/40 p-4 sm:grid-cols-2">
+          <div data-field>
+            <label class="label req" for="subjectName">วิชา</label>
+            <input type="text" id="subjectName" class="input" placeholder="เช่น ภาษาไทยพื้นฐาน" maxlength="150" />
+            <p class="help-error" data-error></p>
+          </div>
+          <div data-field>
+            <label class="label req" for="subjectCode">รหัสวิชา</label>
+            <input type="text" id="subjectCode" class="input" placeholder="เช่น ท11101" maxlength="40" />
+            <p class="help-error" data-error></p>
+          </div>
+          <div data-field class="sm:col-span-2">
+            <label class="label req" id="label-learning-area">กลุ่มสาระการเรียนรู้</label>
+            <div id="learning-area-select" aria-labelledby="label-learning-area"></div>
+            <p class="help-error" data-error></p>
+          </div>
+        </div>
+
+        <div class="sm:col-span-2 flex justify-end pt-1">
+          <button type="submit" class="btn-primary w-full sm:w-auto" id="btn-next">
+            <span>ถัดไป</span>
+            <span data-icon="back" class="rotate-180"></span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ ตอนที่ 2 : แบบการเยี่ยมชั้นเรียน ============ -->
+    <section id="step-2" class="hidden space-y-4 sm:space-y-5">
+
+      <!-- สรุปข้อมูลทั่วไปที่เลือกไว้ -->
+      <div class="card card-pad">
+        <h2 class="section-title mb-3">
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-500" data-icon="clipboard"></span>
+          ตอนที่ 2 : แบบการเยี่ยมชั้นเรียน
+        </h2>
+        <div id="general-recap" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- เกณฑ์คะแนน -->
+      <div class="card card-pad">
+        <p class="mb-3 text-sm font-bold text-plum">เกณฑ์การให้คะแนน</p>
+        <div id="score-legend" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- ตารางตัวชี้วัด -->
+      <div class="card">
+        <div class="flex flex-col gap-1 border-b border-slate-100 px-4 py-4 sm:px-6">
+          <h3 class="text-sm font-bold text-plum sm:text-base">รายการตัวชี้วัดการเยี่ยมชั้นเรียน</h3>
+          <p class="text-xs text-slate-500">กรุณาเลือกระดับการปฏิบัติให้ครบทุกข้อ (ใช้ปุ่มลูกศรและ Enter บนแป้นพิมพ์ได้)</p>
+        </div>
+        <div class="table-wrap px-4 sm:px-6">
+          <table class="table min-w-[54rem]" id="indicator-table">
+            <thead>
+              <tr>
+                <th class="w-16 text-center">ที่</th>
+                <th>รายการตัวชี้วัด</th>
+                <th class="w-[14rem] text-center">การดำเนินการ</th>
+                <th class="w-[19rem] text-center">ผลการดำเนินการ (ระดับคุณภาพ)</th>
+              </tr>
+            </thead>
+            <tbody id="indicator-body"></tbody>
+          </table>
+        </div>
+        <p class="help-error px-4 pb-3 sm:px-6" data-error="scores"></p>
+      </div>
+
+      <!-- Summary cards -->
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div class="stat-card border-l-4 border-l-brand-500">
+          <p class="text-xs font-semibold text-slate-500">คะแนนรวม</p>
+          <p class="mt-1 text-3xl font-extrabold text-brand-500"><span id="sum-total">0</span><span class="text-lg font-bold text-slate-400">/<span id="sum-max">0</span></span></p>
+          <p class="mt-1 text-xs text-slate-400">ให้คะแนนแล้ว <span id="sum-answered">0</span> จาก <span id="sum-count">0</span> ข้อ</p>
+        </div>
+        <div class="stat-card border-l-4 border-l-[#0288D1]">
+          <p class="text-xs font-semibold text-slate-500">ร้อยละ</p>
+          <p class="mt-1 text-3xl font-extrabold text-[#0288D1]"><span id="sum-percent">0.00</span>%</p>
+          <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+            <div id="sum-bar" class="h-full w-0 rounded-full bg-[#0288D1] transition-all duration-300"></div>
+          </div>
+        </div>
+        <div class="stat-card border-l-4 border-l-teal-500">
+          <p class="text-xs font-semibold text-slate-500">ระดับคุณภาพ</p>
+          <p class="mt-2"><span id="sum-quality" class="badge-off text-base">ยังไม่ได้ประเมิน</span></p>
+          <p class="mt-2 text-xs text-slate-400">คำนวณอัตโนมัติจากร้อยละที่ได้</p>
+        </div>
+      </div>
+
+      <!-- ข้อคิดเห็น -->
+      <div class="card card-pad" data-field>
+        <label class="label req" for="comment">ข้อคิดเห็น/ข้อเสนอแนะ</label>
+        <textarea id="comment" rows="4" class="input resize-y" placeholder="ระบุข้อคิดเห็นและข้อเสนอแนะจากการเยี่ยมชั้นเรียน..." maxlength="2000"></textarea>
+        <div class="mt-1.5 flex items-center justify-between gap-3">
+          <p class="help-error" data-error></p>
+          <p class="shrink-0 text-xs text-slate-400"><span id="comment-count">0</span> / 2000 ตัวอักษร</p>
+        </div>
+      </div>
+
+      <!-- อัปโหลดรูปภาพ -->
+      <div class="card card-pad" data-field>
+        <div class="mb-3 flex items-center justify-between gap-2">
+          <label class="label mb-0" id="label-images">รูปภาพการเยี่ยมชั้นเรียน</label>
+          <span class="chip" id="images-required-chip">ไม่บังคับ</span>
+        </div>
+        <div id="image-uploader" aria-labelledby="label-images"></div>
+        <div id="upload-progress" class="mt-3 hidden">
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-500">
+            <span>กำลังอัปโหลดรูปภาพ...</span><span id="upload-percent">0%</span>
+          </div>
+          <div class="mt-1 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+            <div id="upload-bar" class="h-full w-0 rounded-full bg-brand-500 transition-all"></div>
+          </div>
+        </div>
+        <p class="help-error" data-error></p>
+      </div>
+
+      <!-- ปุ่มดำเนินการ -->
+      <div class="flex flex-col-reverse gap-3 pb-2 sm:flex-row sm:justify-between">
+        <button type="button" class="btn-secondary" id="btn-back">
+          <span data-icon="back"></span><span>ย้อนกลับ</span>
+        </button>
+        <button type="button" class="btn-primary sm:min-w-[18rem]" id="btn-save">
+          <span data-icon="check"></span><span>บันทึกผลการประเมินทั้งหมด</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ ปุ่มเข้าสู่ระบบผู้ดูแล ============ -->
+  <button type="button" id="fab-admin"
+    class="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-plum text-white shadow-xl transition hover:scale-105 active:scale-95 sm:bottom-8 sm:right-8"
+    aria-label="เข้าสู่ระบบผู้ดูแล" title="เข้าสู่ระบบผู้ดูแล">
+    <span data-icon="lock" class="h-6 w-6"></span>
+  </button>
+
+  <!-- ============ Footer ============ -->
+  <footer class="mt-auto w-full border-t border-slate-200 bg-slate-100">
+    <div class="container-app flex flex-col items-center gap-1 py-5 text-center">
+      <p class="text-sm font-bold text-plum">ระบบแบบเยี่ยมชั้นเรียน</p>
+      <p data-school-name class="text-xs text-slate-600"></p>
+      <p class="text-xs text-slate-500">&copy; <span data-current-year></span> สงวนลิขสิทธิ์</p>
+    </div>
+  </footer>
+
+  <script src="/vendor/sweetalert2.all.min.js?v=__ASSET_V__"></script>
+  <script src="/js/core.js?v=__ASSET_V__"></script>
+  <script src="/js/components.js?v=__ASSET_V__"></script>
+  <script src="/js/form.js?v=__ASSET_V__"></script>
+</body>
+</html>

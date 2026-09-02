@@ -1,0 +1,33 @@
+# ตัวอย่าง systemd unit (ทางเลือกแทน PM2)
+# 1) คัดลอกไปที่ /etc/systemd/system/classroom-visit.service
+# 2) แก้ User, WorkingDirectory และ ExecStart ให้ตรงกับเครื่องจริง
+# 3) sudo systemctl daemon-reload && sudo systemctl enable --now classroom-visit
+
+[Unit]
+Description=ระบบแบบเยี่ยมชั้นเรียน (Classroom Visit System)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/classroom-visit
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=SECURE_COOKIE=1
+
+# ให้เวลาปิดฐานข้อมูล SQLite อย่างเรียบร้อยก่อนถูกฆ่า
+KillSignal=SIGTERM
+TimeoutStopSec=15
+
+# ความปลอดภัยเพิ่มเติม — เขียนได้เฉพาะโฟลเดอร์ข้อมูล
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/var/www/classroom-visit/data /var/www/classroom-visit/uploads /var/www/classroom-visit/logs
+
+[Install]
+WantedBy=multi-user.target

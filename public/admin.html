@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#4A2C6D" />
+  <title>ผู้ดูแลระบบ | ระบบแบบเยี่ยมชั้นเรียน</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%AB%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/app.css?v=__ASSET_V__" />
+  <link rel="stylesheet" href="/css/print.css?v=__ASSET_V__" />
+</head>
+<body class="min-h-screen bg-slate-50">
+
+  <!-- Overlay สำหรับ Sidebar บนมือถือ -->
+  <div id="sidebar-overlay" class="fixed inset-0 z-40 hidden bg-plum/50 backdrop-blur-[2px] lg:hidden"></div>
+
+  <!-- ============ Sidebar ============ -->
+  <aside id="sidebar"
+    class="fixed inset-y-0 left-0 z-50 flex w-[17rem] -translate-x-full flex-col bg-gradient-to-b from-plum to-[#331d4c] text-white transition-transform duration-200 lg:translate-x-0"
+    aria-label="เมนูผู้ดูแลระบบ">
+    <div class="flex items-start gap-3 border-b border-white/10 px-4 py-4">
+      <div data-school-logo class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/95 text-brand-500"></div>
+      <div class="min-w-0 flex-1">
+        <p data-school-name class="truncate text-sm font-bold"></p>
+        <p class="truncate text-[11px] text-white/70">ระบบแบบเยี่ยมชั้นเรียน</p>
+        <p class="mt-1 inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-semibold">
+          <span class="h-1.5 w-1.5 rounded-full bg-teal-500"></span>ผู้ดูแลระบบ
+        </p>
+      </div>
+      <button type="button" id="sidebar-close" class="icon-btn text-white/70 hover:bg-white/10 lg:hidden" aria-label="ปิดเมนู">
+        <span data-icon="close"></span>
+      </button>
+    </div>
+    <nav id="sidebar-menu" class="flex-1 space-y-0.5 overflow-y-auto px-3 py-3"></nav>
+    <div class="border-t border-white/10 px-4 py-3 text-[11px] text-white/50">
+      <p>เวอร์ชัน 1.0.0</p>
+    </div>
+  </aside>
+
+  <!-- ============ Main ============ -->
+  <div class="lg:pl-[17rem]">
+    <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+      <div class="flex items-center gap-3 px-4 py-3 sm:px-6">
+        <button type="button" id="sidebar-open" class="icon-btn border-slate-200 bg-white text-plum hover:bg-slate-50 lg:hidden" aria-label="เปิดเมนู">
+          <span data-icon="menu" class="h-6"></span>
+        </button>
+        <div class="min-w-0 flex-1">
+          <h1 id="page-title" class="truncate text-base font-extrabold text-plum sm:text-xl">แดชบอร์ด</h1>
+          <p id="page-subtitle" class="truncate text-xs text-slate-500"></p>
+        </div>
+        <a href="/" class="btn-secondary btn-sm hidden sm:inline-flex" title="ไปยังหน้าแบบการเยี่ยมชั้นเรียน">
+          <span data-icon="clipboard" class="h-4"></span><span>หน้าแบบประเมิน</span>
+        </a>
+      </div>
+    </header>
+
+    <main id="view" class="px-4 py-5 sm:px-6 sm:py-6"></main>
+
+    <footer class="mt-auto border-t border-slate-200 bg-slate-100">
+      <div class="flex flex-col items-center gap-1 px-4 py-5 text-center">
+        <p class="text-sm font-bold text-plum">ระบบแบบเยี่ยมชั้นเรียน</p>
+        <p data-school-name class="text-xs text-slate-600"></p>
+        <p class="text-xs text-slate-500">&copy; <span data-current-year></span> สงวนลิขสิทธิ์</p>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/vendor/sweetalert2.all.min.js?v=__ASSET_V__"></script>
+  <script src="/vendor/chart.umd.js?v=__ASSET_V__"></script>
+  <script src="/js/core.js?v=__ASSET_V__"></script>
+  <script src="/js/components.js?v=__ASSET_V__"></script>
+  <script src="/js/print-doc.js?v=__ASSET_V__"></script>
+  <script src="/js/admin.js?v=__ASSET_V__"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "name": "classroom-visit-system",
+  "version": "1.0.0",
+  "description": "ระบบแบบเยี่ยมชั้นเรียน (Classroom Visit System)",
+  "private": true,
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "build:css": "tailwindcss -i ./src/input.css -o ./public/css/app.css --minify",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./public/css/app.css --watch",
+    "vendor": "node scripts/copy-vendor.js",
+    "seed": "node scripts/seed.js",
+    "setup": "npm run vendor && npm run build:css",
+    "test": "node scripts/check-sql.js && node scripts/run-tests.js",
+    "test:live": "node scripts/smoke-test.js",
+    "preflight": "node scripts/preflight.js",
+    "build": "npm run vendor && npm run build:css",
+    "check:sql": "node scripts/check-sql.js",
+    "migrate:from-sqlite": "node scripts/migrate-sqlite-to-postgres.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "@vercel/blob": "^2.8.0",
+    "chart.js": "^4.5.1",
+    "express": "^4.22.2",
+    "multer": "^2.3.0",
+    "sweetalert2": "^11.26.25",
+    "ws": "^8.21.3"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "tailwindcss": "^3.4.17"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}

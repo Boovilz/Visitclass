@@ -1,0 +1,111 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { --brand: #F13596; --brand-light: #F97AB6; --plum: #4A2C6D; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply font-sans text-slate-700 antialiased;
+    background: linear-gradient(180deg, #FFF7FB 0%, #FFFFFF 38%, #F8FAFC 100%);
+    min-height: 100vh;
+  }
+  *:focus-visible { @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-white rounded-lg; }
+  ::-webkit-scrollbar { height: 8px; width: 8px; }
+  ::-webkit-scrollbar-thumb { @apply bg-slate-300 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-400; }
+}
+
+@layer components {
+  /* ---------- Layout ---------- */
+  .container-app { @apply mx-auto w-full max-w-7xl px-3 sm:px-5 lg:px-8; }
+  .card { @apply rounded-2xl border border-slate-200/80 bg-white shadow-card; }
+  .card-pad { @apply p-4 sm:p-6; }
+  .section-title { @apply flex items-center gap-2 text-base font-bold text-plum sm:text-lg; }
+
+  /* ---------- Buttons ---------- */
+  .btn { @apply inline-flex select-none items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition
+         disabled:cursor-not-allowed disabled:opacity-60 active:scale-[.985]; }
+  .btn-primary { @apply btn bg-brand-500 text-white shadow-soft hover:bg-brand-600; }
+  .btn-secondary { @apply btn border border-slate-200 bg-white text-slate-600 hover:bg-slate-50; }
+  .btn-ghost { @apply btn text-slate-600 hover:bg-slate-100; }
+  .btn-teal { @apply btn bg-teal-500 text-white hover:bg-teal-600; }
+  .btn-danger { @apply btn bg-danger-600 text-white hover:bg-[#B71C1C]; }
+  .btn-sm { @apply px-3 py-1.5 text-xs; }
+  .icon-btn { @apply inline-flex h-9 w-9 items-center justify-center rounded-lg border border-transparent transition; }
+
+  /* ---------- Forms ---------- */
+  .label { @apply mb-1.5 block text-sm font-semibold text-slate-700; }
+  .req::after { content: ' *'; @apply text-danger-600; }
+  .input { @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800
+           placeholder:text-slate-400 transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100; }
+  .input-error { @apply border-danger-500 bg-[#FEF2F2] focus:border-danger-500 focus:ring-danger-500/20; }
+  .help-error { @apply mt-1.5 hidden items-center gap-1 text-xs font-medium text-danger-600; }
+  .help-error.show { @apply flex; }
+  select.input {
+    @apply pr-10;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.1rem;
+  }
+
+  /* ---------- Badges ---------- */
+  .badge { @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold; }
+  .badge-on { @apply badge bg-teal-500/10 text-teal-600; }
+  .badge-off { @apply badge bg-slate-100 text-slate-500; }
+  .badge-q1 { @apply badge bg-teal-500 text-white; }        /* ดีมาก */
+  .badge-q2 { @apply badge bg-[#AED581] text-[#33691E]; }   /* ดี */
+  .badge-q3 { @apply badge bg-[#FFCA28] text-[#7A4F01]; }   /* ปานกลาง */
+  .badge-q4 { @apply badge bg-[#FF8A65] text-[#7C2D12]; }   /* พอใช้ */
+  .badge-q5 { @apply badge bg-[#EF5350] text-white; }       /* ปรับปรุงแก้ไข */
+
+  /* ---------- Score buttons ---------- */
+  .score-btn { @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-slate-200
+               bg-white text-sm font-bold text-slate-500 transition hover:border-slate-300 hover:bg-slate-50
+               sm:h-11 sm:w-11 sm:text-base; }
+  .score-btn[aria-checked="true"] { @apply border-transparent text-white shadow-md; }
+  .score-btn[data-score="1"][aria-checked="true"] { @apply bg-[#D32F2F]; }
+  .score-btn[data-score="2"][aria-checked="true"] { @apply bg-[#F57C00]; }
+  .score-btn[data-score="3"][aria-checked="true"] { @apply bg-[#FBC02D] text-[#5A3B00]; }
+  .score-btn[data-score="4"][aria-checked="true"] { @apply bg-[#0288D1]; }
+  .score-btn[data-score="5"][aria-checked="true"] { @apply bg-[#26A69A]; }
+
+  /* ---------- ปุ่มการดำเนินการ (ปฏิบัติแล้ว / กำลังปฏิบัติ / ยังไม่ปฏิบัติ) ---------- */
+  .practice-btn { @apply w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs font-semibold
+                  text-slate-500 transition hover:border-slate-300 hover:bg-slate-50; }
+  .practice-btn[aria-checked="true"] { @apply border-transparent text-white shadow-sm; }
+  .practice-btn[data-practice="done"][aria-checked="true"] { @apply bg-[#26A69A]; }
+  .practice-btn[data-practice="doing"][aria-checked="true"] { @apply bg-[#FBC02D] text-[#5A3B00]; }
+  .practice-btn[data-practice="not_yet"][aria-checked="true"] { @apply bg-[#EF5350]; }
+
+  /* ---------- ตัวเลือกระดับการศึกษา ---------- */
+  .level-btn { @apply inline-flex items-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-4 py-2.5
+               text-sm font-semibold text-slate-600 transition hover:border-brand-300; }
+  .level-btn[aria-checked="true"] { @apply border-brand-500 bg-brand-50 text-brand-600; }
+
+  /* ---------- แถวหัวข้อกลุ่มในตาราง ---------- */
+  .group-row td { @apply bg-brand-50/70 py-2 text-sm font-bold text-plum; }
+
+  /* ---------- Table ---------- */
+  .table-wrap { @apply -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0; }
+  .table { @apply w-full min-w-[640px] border-collapse text-sm; }
+  .table thead th { @apply whitespace-nowrap border-b border-slate-200 bg-brand-50 px-3 py-3 text-left font-bold text-plum first:rounded-tr-none; }
+  .table tbody td { @apply border-b border-slate-100 px-3 py-3 align-middle; }
+  .table tbody tr:hover { @apply bg-brand-50/40; }
+
+  /* ---------- Misc ---------- */
+  .skeleton { @apply relative overflow-hidden rounded-lg bg-slate-200/70; }
+  .skeleton::after { content: ''; @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/70 to-transparent animate-shimmer; }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600; }
+  .stat-card { @apply relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4 shadow-card; }
+  .link { @apply font-semibold text-brand-600 underline-offset-2 hover:underline; }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff !important; }
+  .card { box-shadow: none !important; border-color: #cbd5e1 !important; }
+  @page { size: A4; margin: 12mm; }
+}
