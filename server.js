@@ -22,6 +22,7 @@ const mastersRoutes = require('./src/routes/masters');
 const evaluationRoutes = require('./src/routes/evaluations');
 const summaryRoutes = require('./src/routes/summary');
 const dashboardRoutes = require('./src/routes/dashboard');
+const diagnosticsRoutes = require('./src/routes/diagnostics');
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -115,6 +116,7 @@ app.use('/api/admin/masters', requireAdmin, mastersRoutes);
 app.use('/api/admin/evaluations', requireAdmin, evaluationRoutes);
 app.use('/api/admin/summary', requireAdmin, summaryRoutes);
 app.use('/api/admin/dashboard', requireAdmin, dashboardRoutes);
+app.use('/api/admin/diagnostics', requireAdmin, diagnosticsRoutes);
 
 app.use('/api', (_req, res) => res.status(404).json({ ok: false, message: 'ไม่พบ API ที่เรียกใช้' }));
 

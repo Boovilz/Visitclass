@@ -143,6 +143,7 @@ async function removeFile(imageUrl) {
 
 module.exports = {
   UPLOAD_DIR, USE_BLOB,
+  BLOB_TOKEN_KEY: BLOB.key,
   uploadImages, uploadLogo,
   storeFile, storeFiles, removeFile,
   MAX_FILE_SIZE, MAX_FILES,
