@@ -94,13 +94,19 @@ async function storeFile(file) {
 
   if (USE_BLOB) {
     const { put } = require('@vercel/blob');
-    const blob = await put(`uploads/${fileName}`, file.buffer, {
-      access: 'public',
-      token: BLOB_TOKEN,
-      contentType: file.mimetype,
-      addRandomSuffix: false,
-    });
-    return { url: blob.url, fileName: file.originalname || fileName };
+    try {
+      const blob = await put(`uploads/${fileName}`, file.buffer, {
+        access: 'public',
+        token: BLOB_TOKEN,
+        contentType: file.mimetype,
+      });
+      return { url: blob.url, fileName: file.originalname || fileName };
+    } catch (err) {
+      // ส่งข้อความจริงจาก Vercel Blob ขึ้นไปให้เห็น จะได้แก้ถูกจุด
+      // (ข้อความจาก API ไม่มีค่า token อยู่ในนั้น)
+      console.error('[uploads] Vercel Blob ปฏิเสธการอัปโหลด:', err && err.message);
+      throw bad(`อัปโหลดรูปไปยัง Vercel Blob ไม่สำเร็จ: ${err && err.message ? err.message : 'ไม่ทราบสาเหตุ'}`);
+    }
   }
 
   // บน serverless เขียนดิสก์ไม่ได้ ถ้ายังไม่ได้ต่อ Blob ต้องบอกให้ชัดว่าต้องทำอะไร
