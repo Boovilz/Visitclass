@@ -136,16 +136,21 @@ function assetVersion() {
 
 const htmlCache = new Map();
 
-const page = (file) => (_req, res) => {
-  const version = assetVersion();
-  const cached = htmlCache.get(file);
-  let html = cached && cached.version === version ? cached.html : null;
-  if (!html) {
-    html = fs.readFileSync(path.join(PUBLIC_DIR, file), 'utf8').split('__ASSET_V__').join(version);
-    htmlCache.set(file, { version, html });
+const page = (file) => (_req, res, next) => {
+  try {
+    const version = assetVersion();
+    const cached = htmlCache.get(file);
+    let html = cached && cached.version === version ? cached.html : null;
+    if (!html) {
+      html = fs.readFileSync(path.join(PUBLIC_DIR, file), 'utf8').split('__ASSET_V__').join(version);
+      htmlCache.set(file, { version, html });
+    }
+    res.setHeader('Cache-Control', 'no-cache');
+    res.type('html').send(html);
+  } catch (err) {
+    // ไฟล์หน้าเว็บหาย = การ deploy ไม่สมบูรณ์ (ไฟล์ public/ ไม่ถูกรวมเข้า bundle)
+    next(new Error(`อ่านไฟล์หน้าเว็บ ${file} ไม่ได้ — การ deploy อาจไม่สมบูรณ์ (${err.code || err.message})`));
   }
-  res.setHeader('Cache-Control', 'no-cache');
-  res.type('html').send(html);
 };
 
 /** ตรวจสอบสิทธิ์ก่อนเข้าหน้าผู้ดูแลทุกครั้ง — ถ้าเซสชันหมดอายุให้กลับไปหน้ากรอก PIN */
@@ -159,7 +164,7 @@ app.get('/admin', adminPageGuard, page('admin.html'));
 app.get('/admin/evaluation', adminPageGuard, page('evaluation-detail.html'));
 app.get('/admin/summary-detail', adminPageGuard, page('summary-detail.html'));
 
-app.use((_req, res) => { res.status(404); page("404.html")(_req, res); });
+app.use((req, res, next) => { res.status(404); page("404.html")(req, res, next); });
 app.use(errorHandler);
 
 if (require.main === module) {
