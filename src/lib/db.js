@@ -80,7 +80,10 @@ function createPgliteDriver() {
   if (process.env.VERCEL) {
     throw new Error('ยังไม่ได้ต่อฐานข้อมูล — กรุณาสร้าง Neon ที่แท็บ Storage ของโปรเจกต์บน Vercel');
   }
-  const { PGlite } = require('@electric-sql/pglite');
+  // ใช้ชื่อโมดูลผ่านตัวแปร เพื่อไม่ให้ตัวไล่ dependency ของ Vercel พยายามรวม PGlite เข้า bundle
+  // (เป็น devDependency ใช้เฉพาะตอนพัฒนา ถ้าถูกไล่จะทำให้ build ล้ม)
+  const pgliteModule = '@electric-sql/pglite';
+  const { PGlite } = require(pgliteModule);
   // เก็บไฟล์ไว้ในโฟลเดอร์ data เพื่อให้ข้อมูลอยู่ต่อระหว่างการพัฒนา
   const dir = process.env.PGLITE_DIR || path.join(__dirname, '..', '..', 'data', 'pg');
   if (dir !== ':memory:') fs.mkdirSync(path.dirname(dir), { recursive: true });
