@@ -24,8 +24,10 @@ function findBlobToken() {
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     return { key: 'BLOB_READ_WRITE_TOKEN', value: process.env.BLOB_READ_WRITE_TOKEN };
   }
+  // ดูจาก "ค่า" ของตัวแปรแทนชื่อ — token ของ Vercel Blob ขึ้นต้นด้วย vercel_blob_rw_ เสมอ
+  // จึงตั้งชื่อตัวแปรว่าอะไรก็ใช้ได้ ไม่ต้องกังวลเรื่อง prefix ของ store
   const key = Object.keys(process.env).find(
-    (k) => k.endsWith('_READ_WRITE_TOKEN') && String(process.env[k]).startsWith('vercel_blob_')
+    (k) => typeof process.env[k] === 'string' && process.env[k].startsWith('vercel_blob_rw_')
   );
   return key ? { key, value: process.env[key] } : { key: null, value: '' };
 }

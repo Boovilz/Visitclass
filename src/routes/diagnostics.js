@@ -17,8 +17,10 @@ router.get('/', wrap(async (_req, res) => {
   const dbKeys = ['DATABASE_URL', 'POSTGRES_URL', 'POSTGRES_PRISMA_URL', 'DATABASE_URL_UNPOOLED', 'POSTGRES_URL_NON_POOLING'];
   const dbKey = dbKeys.find((k) => process.env[k]) || null;
 
-  // ชื่อตัวแปรที่ลงท้ายด้วย _READ_WRITE_TOKEN ทั้งหมด (ไม่เอาค่า)
-  const blobKeys = Object.keys(process.env).filter((k) => k.endsWith('_READ_WRITE_TOKEN'));
+  // ชื่อตัวแปรที่น่าจะเกี่ยวกับที่เก็บรูปภาพ (เอาเฉพาะชื่อ ไม่เอาค่า)
+  const blobKeys = Object.keys(process.env).filter(
+    (k) => /BLOB|TOKEN/i.test(k) || String(process.env[k] || '').startsWith('vercel_blob_')
+  );
 
   const counts = await one(`
     SELECT
