@@ -43,7 +43,13 @@ function errorHandler(err, req, res, _next) {
     return res.status(400).json({ ok: false, message: 'รูปแบบข้อมูลที่ส่งมาไม่ถูกต้อง' });
   }
   console.error('[error]', req.method, req.originalUrl, err);
-  res.status(500).json({ ok: false, message: 'เกิดข้อผิดพลาดภายในระบบ กรุณาลองใหม่อีกครั้ง' });
+  // ใส่เฉพาะ "รหัส" ของข้อผิดพลาด ไม่ใส่ข้อความเต็มหรือ stack
+  // เพราะข้อความของไดรเวอร์ฐานข้อมูลอาจมีข้อมูลการเชื่อมต่ออยู่
+  const code = (err && (err.code || err.name)) || '';
+  res.status(500).json({
+    ok: false,
+    message: `เกิดข้อผิดพลาดภายในระบบ${code ? ` (${code})` : ''} กรุณาลองใหม่อีกครั้ง`,
+  });
 }
 
 function pageParams(query, defaultSize = 10) {

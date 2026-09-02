@@ -81,6 +81,14 @@ async function storeFile(file) {
     return { url: blob.url, fileName: file.originalname || fileName };
   }
 
+  // บน serverless เขียนดิสก์ไม่ได้ ถ้ายังไม่ได้ต่อ Blob ต้องบอกให้ชัดว่าต้องทำอะไร
+  if (process.env.VERCEL) {
+    throw bad(
+      'ยังไม่ได้ต่อที่เก็บรูปภาพ (Vercel Blob) จึงอัปโหลดไฟล์ไม่ได้ — ' +
+      'ไปที่โปรเจกต์บน Vercel → แท็บ Storage → Create Database → เลือก Blob → Connect to Project แล้ว Redeploy'
+    );
+  }
+
   ensureUploadDir();
   await fs.promises.writeFile(path.join(UPLOAD_DIR, fileName), file.buffer);
   return { url: `/uploads/${fileName}`, fileName: file.originalname || fileName };
