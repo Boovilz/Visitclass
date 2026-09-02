@@ -13,6 +13,7 @@ const { requireAdmin, currentSession } = require('./src/lib/auth');
 const { UPLOAD_DIR } = require('./src/lib/uploads');
 const { migrate, closeDatabase } = require('./src/lib/db');
 const { bootstrapIfEmpty } = require('./src/lib/bootstrap');
+const { missingConfig, setupPage } = require('./src/lib/setup-check');
 
 const publicRoutes = require('./src/routes/public');
 const authRoutes = require('./src/routes/auth');
@@ -55,7 +56,23 @@ app.use((_req, res, next) => {
 // เตรียมโครงสร้างฐานข้อมูลครั้งเดียวต่อโปรเซส ก่อนให้บริการคำขอแรก
 let readyPromise = null;
 app.use((req, res, next) => {
-  if (!readyPromise) readyPromise = migrate().then(() => bootstrapIfEmpty());
+  // ยังตั้งค่าไม่ครบ (deploy ครั้งแรกบน Vercel) — บอกขั้นตอนที่ค้างแทนการขึ้น error
+  const missing = missingConfig();
+  if (missing.length) {
+    if (req.path.startsWith('/api/')) {
+      return res.status(503).json({
+        ok: false,
+        message: 'ระบบยังตั้งค่าไม่เสร็จ: ' + missing.map((m) => m.title).join(' · '),
+      });
+    }
+    return res.status(503).type('html').send(setupPage(missing));
+  }
+
+  if (!readyPromise) {
+    readyPromise = migrate()
+      .then(() => bootstrapIfEmpty())
+      .catch((err) => { readyPromise = null; throw err; }); // ให้ลองใหม่ได้เมื่อตั้งค่าเสร็จ
+  }
   readyPromise.then(() => next()).catch(next);
 });
 

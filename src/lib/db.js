@@ -66,6 +66,10 @@ function createNeonDriver() {
 }
 
 function createPgliteDriver() {
+  // บน Vercel ไม่มีดิสก์ถาวร ถ้าปล่อยให้ใช้ PGlite ข้อมูลจะหายทุกครั้งที่ deploy
+  if (process.env.VERCEL) {
+    throw new Error('ยังไม่ได้ต่อฐานข้อมูล — กรุณาสร้าง Neon ที่แท็บ Storage ของโปรเจกต์บน Vercel');
+  }
   const { PGlite } = require('@electric-sql/pglite');
   // เก็บไฟล์ไว้ในโฟลเดอร์ data เพื่อให้ข้อมูลอยู่ต่อระหว่างการพัฒนา
   const dir = process.env.PGLITE_DIR || path.join(__dirname, '..', '..', 'data', 'pg');
