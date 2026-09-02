@@ -12,3 +12,5 @@ logs/
 data/pg/
 
 dist/
+
+data/pg-test*

@@ -9,12 +9,25 @@ const path = require('node:path');
 const fs = require('node:fs');
 
 const ROOT = path.join(__dirname, '..');
-const TEST_DB = path.join(ROOT, 'data', 'pg-test');
+// ใช้โฟลเดอร์ใหม่ทุกครั้ง เพื่อเลี่ยงปัญหาไฟล์ถูกล็อกค้างจากรอบก่อน (พบบน Windows)
+const TEST_DB = path.join(ROOT, 'data', `pg-test-${process.pid}-${Date.now().toString(36)}`);
 const PORT = process.env.TEST_PORT || 3199;
 
 /** ลบไฟล์ฐานข้อมูลทดสอบทั้งหมด (รวมไฟล์ WAL ของ SQLite) */
 function removeTestDb() {
-  try { fs.rmSync(TEST_DB, { recursive: true, force: true }); } catch { /* ไม่มีโฟลเดอร์ = ไม่ต้องทำอะไร */ }
+  // ลบของรอบนี้ และเก็บกวาดของรอบก่อนที่อาจค้างอยู่
+  const dataDir = path.join(ROOT, 'data');
+  const targets = [TEST_DB];
+  try {
+    for (const name of fs.readdirSync(dataDir)) {
+      if (name.startsWith('pg-test')) targets.push(path.join(dataDir, name));
+    }
+  } catch { /* ยังไม่มีโฟลเดอร์ data */ }
+
+  for (const dir of targets) {
+    try { fs.rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 }); }
+    catch { /* ลบไม่ได้ก็ข้าม เพราะรอบนี้ใช้โฟลเดอร์ชื่อใหม่อยู่แล้ว */ }
+  }
 }
 
 // ใช้ Postgres ในเครื่อง (PGlite) แยกโฟลเดอร์ต่างหาก เพื่อไม่ให้แตะข้อมูลจริง
