@@ -4,7 +4,7 @@ const { query, one, run, transaction, getSettings, now } = require('./db');
 const { calculate } = require('./scoring');
 const { mapRow, mapRows } = require('./rows');
 const { HttpError, bad, toInt, toDate, cleanMultiline, requiredText, optionalText } = require('./validate');
-const { removeFile, storeFiles } = require('./uploads');
+const { removeFile, storeFiles, USE_BLOB } = require('./uploads');
 const { EDUCATION_LEVELS, SUBJECT_REQUIRED_LEVEL, PRACTICE_VALUES } = require('./constants');
 
 const COMMENT_MIN = 10;
@@ -116,7 +116,9 @@ async function createEvaluation(body, files = []) {
 
   const summary = calculate(rows.map((r) => r.score));
 
-  if (settings.require_images && files.length === 0) {
+  // ถ้าระบบยังอัปโหลดรูปไม่ได้ ก็ไม่ควรบังคับให้แนบ ไม่งั้นจะบันทึกอะไรไม่ได้เลย
+  const uploadsAvailable = USE_BLOB || !process.env.VERCEL;
+  if (settings.require_images && uploadsAvailable && files.length === 0) {
     throw bad('ผู้ดูแลระบบกำหนดให้ต้องแนบรูปภาพการเยี่ยมชั้นเรียนอย่างน้อย 1 รูป', { field: 'images' });
   }
 

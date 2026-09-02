@@ -5,7 +5,7 @@ const { query, getSettings } = require('../lib/db');
 const { wrap } = require('../lib/http');
 const { mapRows } = require('../lib/rows');
 const { createEvaluation, COMMENT_MIN } = require('../lib/evaluations');
-const { uploadImages, MAX_FILE_SIZE, MAX_FILES } = require('../lib/uploads');
+const { uploadImages, MAX_FILE_SIZE, MAX_FILES, USE_BLOB } = require('../lib/uploads');
 const { EDUCATION_LEVELS, SUBJECT_REQUIRED_LEVEL, PRACTICE_OPTIONS } = require('../lib/constants');
 const { rateLimit } = require('../lib/ratelimit');
 
@@ -21,6 +21,8 @@ router.get('/settings', wrap(async (_req, res) => {
       affiliationName: s.affiliation_name,
       schoolLogo: s.school_logo,
       requireImages: !!s.require_images,
+      // บน serverless ถ้ายังไม่ได้ต่อที่เก็บรูปภาพ จะอัปโหลดไม่ได้
+      uploadsAvailable: USE_BLOB || !process.env.VERCEL,
       pinConfigured: !!s.admin_pin_hash,
       commentMinLength: COMMENT_MIN,
       maxFileSize: MAX_FILE_SIZE,

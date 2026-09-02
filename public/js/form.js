@@ -387,9 +387,21 @@
       saveDraft();
     });
 
-    state.uploader = new A.ImageUploader($('#image-uploader'), {
-      onChange: () => A.clearFieldError($('#image-uploader')),
-    });
+    if (state.settings.uploadsAvailable === false) {
+      // ยังต่อที่เก็บรูปภาพไม่ได้ — บอกตั้งแต่ต้นดีกว่าให้กรอกจนเสร็จแล้วบันทึกไม่ผ่าน
+      clear($('#image-uploader'));
+      $('#image-uploader').appendChild(el('div', {
+        class: 'rounded-xl border border-amber2-500/40 bg-amber2-500/10 p-4 text-sm text-[#7A4F01]',
+      }, [
+        el('p', { class: 'font-bold', text: 'ยังแนบรูปภาพไม่ได้ในขณะนี้' }),
+        el('p', { class: 'mt-1', text: 'ระบบยังไม่ได้เชื่อมต่อที่เก็บรูปภาพ กรุณาแจ้งผู้ดูแลระบบ — บันทึกผลการประเมินได้ตามปกติโดยไม่ต้องแนบรูป' }),
+      ]));
+      $('#images-required-chip').textContent = 'ยังใช้งานไม่ได้';
+    } else {
+      state.uploader = new A.ImageUploader($('#image-uploader'), {
+        onChange: () => A.clearFieldError($('#image-uploader')),
+      });
+    }
 
     $('#btn-back').addEventListener('click', () => goStep(1));
     $('#btn-save').addEventListener('click', save);
@@ -553,8 +565,8 @@
       return;
     }
 
-    const files = state.uploader.getFiles();
-    if (state.settings.requireImages && !files.length) {
+    const files = state.uploader ? state.uploader.getFiles() : [];
+    if (state.settings.requireImages && state.settings.uploadsAvailable !== false && !files.length) {
       A.setFieldError($('#image-uploader'), 'กรุณาแนบรูปภาพการเยี่ยมชั้นเรียนอย่างน้อย 1 รูป');
       await A.alertWarning('ยังไม่ได้แนบรูปภาพ', 'ผู้ดูแลระบบกำหนดให้ต้องแนบรูปภาพอย่างน้อย 1 รูป');
       return;
@@ -627,7 +639,7 @@
     $$('tr[data-indicator-row]').forEach((r) => r.classList.remove('bg-danger-500/5'));
     $('#comment').value = '';
     $('#comment-count').textContent = '0';
-    state.uploader.reset();
+    if (state.uploader) state.uploader.reset();
     $('#semesterId').value = '';
     $('#academicYearId').value = '';
     $('#visitDate').value = A.todayISO();
